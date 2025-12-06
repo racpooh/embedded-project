@@ -1,0 +1,19 @@
+{
+  "name": "household-fire-system",
+  "version": "1.0.0",
+  "description": "Household Fire Detection System with IoT sensors, AI detection, and cloud integration",
+  "type": "module",
+  "scripts": {
+    "upload-mock-data": "node scripts/uploadMockData.js",
+    "delete-all-data": "node scripts/deleteAllData.js",
+    "create-normal-data": "node scripts/createNormalData.js",
+    "create-warning-data": "node scripts/createWarningData.js",
+    "create-danger-data": "node scripts/createDangerData.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "firebase": "^10.14.1"
+  },
+  "author": "",
+  "license": "MIT"
+}

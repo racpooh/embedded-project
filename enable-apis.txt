@@ -1,0 +1,22 @@
+Please enable these APIs in Google Cloud Console:
+
+1. Cloud Functions API
+   https://console.cloud.google.com/apis/library/cloudfunctions.googleapis.com?project=embedded-project-6f2ed
+
+2. Cloud Build API  
+   https://console.cloud.google.com/apis/library/cloudbuild.googleapis.com?project=embedded-project-6f2ed
+
+3. Cloud Run API
+   https://console.cloud.google.com/apis/library/run.googleapis.com?project=embedded-project-6f2ed
+
+4. Eventarc API
+   https://console.cloud.google.com/apis/library/eventarc.googleapis.com?project=embedded-project-6f2ed
+
+5. Pub/Sub API
+   https://console.cloud.google.com/apis/library/pubsub.googleapis.com?project=embedded-project-6f2ed
+
+6. Artifact Registry API
+   https://console.cloud.google.com/apis/library/artifactregistry.googleapis.com?project=embedded-project-6f2ed
+
+After enabling all, wait 2-3 minutes, then try deploying again.
+

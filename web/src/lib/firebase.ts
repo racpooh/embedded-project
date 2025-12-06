@@ -1,5 +1,5 @@
 import { initializeApp, FirebaseApp } from 'firebase/app'
-import { getAuth, signInAnonymously, Auth } from 'firebase/auth'
+import { getAuth, signInAnonymously as firebaseSignInAnonymously, Auth } from 'firebase/auth'
 import { getFirestore, Firestore } from 'firebase/firestore'
 
 let app: FirebaseApp | null = null
@@ -23,11 +23,11 @@ export const initializeFirebase = (): void => {
   db = getFirestore(app)
 }
 
-export const signInAnonymously = async (): Promise<void> => {
+export const signInAnonymouslyOnce = async (): Promise<void> => {
   if (!auth) {
     throw new Error('Firebase not initialized. Call initializeFirebase() first.')
   }
-  await signInAnonymously(auth)
+  await firebaseSignInAnonymously(auth)
 }
 
 export const getFirestoreInstance = (): Firestore => {

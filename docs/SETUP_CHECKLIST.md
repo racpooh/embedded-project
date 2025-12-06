@@ -5,7 +5,7 @@ Use this checklist to verify your project is ready for `git add .`
 ## ✅ Pre-Commit Verification
 
 ### 1. Sensitive Files Excluded
-- [x] Service account JSON (`display-c8393-40e854cf0fda.json`) is ignored
+- [x] Service account JSON (`embedded-project-6f2ed-6ff292c84b10.json`) is ignored
 - [x] `.env` files are ignored (but `.env.example` is tracked)
 - [x] `node_modules/` directories are ignored
 - [x] Python `__pycache__/` directories are ignored
@@ -42,7 +42,7 @@ Run these commands to verify everything is correct:
 git status
 
 # Verify sensitive files are ignored
-git check-ignore -v display-c8393-40e854cf0fda.json
+git check-ignore -v embedded-project-6f2ed-6ff292c84b10.json
 git check-ignore -v web/.env
 git check-ignore -v web/node_modules
 
@@ -57,7 +57,7 @@ git check-ignore -v web/.env.example
 household-fire-system/
 ├── README.md                          # ✅ Tracked
 ├── .gitignore                         # ✅ Tracked
-├── display-c8393-40e854cf0fda.json    # ❌ Ignored (sensitive)
+├── embedded-project-6f2ed-6ff292c84b10.json    # ❌ Ignored (sensitive)
 ├── docs/                              # ✅ Tracked
 │   ├── PROJECT_SUMMARY.md
 │   ├── WEB_DASHBOARD.md

@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire Detection System - Dashboard</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f9fa;
+            --sidebar-bg: #1a1a1a;
+            --sidebar-hover: #2d2d2d;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --text-light: #ffffff;
+            --border-color: #dee2e6;
+            --accent-color: #000000;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            --card-shadow-hover: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--secondary-bg);
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 260px;
+            background: var(--sidebar-bg);
+            padding: 1.5rem 0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--sidebar-hover);
+            border-radius: 2px;
+        }
+
+        .sidebar-logo {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-logo h4 {
+            color: var(--text-light);
+            font-weight: 600;
+            margin: 0;
+            font-size: 1.25rem;
+            letter-spacing: -0.5px;
+        }
+
+        .sidebar-logo small {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.25rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--sidebar-hover);
+            color: var(--text-light);
+            transform: translateX(2px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            color: var(--text-light);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: var(--primary-bg);
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-search {
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .navbar-search input {
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        .navbar-search input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .navbar-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .navbar-btn:hover {
+            background: var(--secondary-bg);
+            border-color: var(--accent-color);
+        }
+
+        .navbar-btn .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: var(--primary-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            height: 100%;
+            border: 1px solid transparent;
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-2px);
+            border-color: var(--border-color);
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+        }
+
+        .stat-card-content h6 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .stat-card-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .stat-card-footer {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-change {
+            font-weight: 600;
+        }
+
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-change.negative {
+            color: var(--danger-color);
+        }
+
+        .stat-change.neutral {
+            color: var(--warning-color);
+        }
+
+        /* Chart Cards */
+        .chart-card {
+            background: var(--primary-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            height: 100%;
+        }
+
+        .chart-card-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card-header h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .chart-card-header p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        /* Risk Badge */
+        .risk-badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .risk-badge.normal {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .risk-badge.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .risk-badge.danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Events List */
+        .events-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .events-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .events-list::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+
+        .event-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s ease;
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-item:hover {
+            background: var(--secondary-bg);
+        }
+
+        .event-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-type {
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .event-type.warning {
+            color: var(--warning-color);
+        }
+
+        .event-type.danger {
+            color: var(--danger-color);
+        }
+
+        .event-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .event-description {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .event-value {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .top-navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .navbar-search {
+                max-width: 100%;
+            }
+
+            .stat-card-value {
+                font-size: 1.5rem;
+            }
+
+            .chart-container {
+                height: 220px;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <h4>Fire Detection</h4>
+            <small>IoT Monitoring System</small>
+        </div>
+
+        <div class="nav-section">
+            <a href="#" class="nav-link active">
+                <i class="bi bi-speedometer2"></i>
+                Dashboard
+            </a>
+            <a href="#" class="nav-link">
+                <i class="bi bi-table"></i>
+                Sensor Logs
+            </a>
+            <a href="#" class="nav-link">
+                <i class="bi bi-graph-up"></i>
+                Analytics
+            </a>
+            <a href="#" class="nav-link">
+                <i class="bi bi-bell"></i>
+                Events & Alerts
+            </a>
+            <a href="#" class="nav-link">
+                <i class="bi bi-gear"></i>
+                Node Configuration
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Account</div>
+            <a href="#" class="nav-link">
+                <i class="bi bi-person"></i>
+                Profile
+            </a>
+            <a href="#" class="nav-link">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Sign In
+            </a>
+            <a href="#" class="nav-link">
+                <i class="bi bi-person-plus"></i>
+                Sign Up
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar">
+            <div class="navbar-search">
+                <input type="text" class="form-control" placeholder="Search sensor data, events, or nodes...">
+            </div>
+            <div class="navbar-actions">
+                <button class="navbar-btn">
+                    <i class="bi bi-bell"></i>
+                    <span class="badge bg-danger">3</span>
+                </button>
+                <button class="navbar-btn">
+                    <i class="bi bi-gear"></i>
+                </button>
+                <div class="user-avatar">
+                    <i class="bi bi-person"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Dashboard</h1>
+            <p>Real-time monitoring of fire detection sensors and environmental data</p>
+        </div>
+
+        <!-- Stats Cards Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-card-content">
+                            <h6>Temperature</h6>
+                            <div class="stat-card-value">32.5°C</div>
+                        </div>
+                        <div class="stat-card-icon">
+                            <i class="bi bi-thermometer-half"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        <span class="stat-change positive">+2.5°C</span> from average
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-card-content">
+                            <h6>Humidity</h6>
+                            <div class="stat-card-value">65%</div>
+                        </div>
+                        <div class="stat-card-icon">
+                            <i class="bi bi-droplet-half"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        <span class="stat-change neutral">Normal</span> range
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-card-content">
+                            <h6>Smoke Level (PPM)</h6>
+                            <div class="stat-card-value">210</div>
+                        </div>
+                        <div class="stat-card-icon">
+                            <i class="bi bi-cloud-haze2"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        <span class="stat-change positive">Safe</span> threshold
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-card-content">
+                            <h6>Risk Level</h6>
+                            <div class="stat-card-value">
+                                <span class="risk-badge normal">NORMAL</span>
+                            </div>
+                        </div>
+                        <div class="stat-card-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card-footer">
+                        <span class="stat-change positive">All systems</span> operational
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-lg-4">
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <h5>Temperature & Humidity</h5>
+                        <p>DHT22 Sensor - Last 24 hours</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="tempChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <h5>Smoke Detection</h5>
+                        <p>MQ-135 Sensor - PPM Levels</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="smokeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <h5>Light Level</h5>
+                        <p>LDR Sensor - Daylight Detection</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="lightChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects and Events Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-lg-7">
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <h5>Sensor Nodes Status</h5>
+                        <p>Active monitoring nodes and their current state</p>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-borderless align-middle">
+                            <thead>
+                                <tr style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;">
+                                    <th>NODE ID</th>
+                                    <th>SENSOR TYPE</th>
+                                    <th>STATUS</th>
+                                    <th>LAST UPDATE</th>
+                                    <th>READING</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>GW-1</strong></td>
+                                    <td>DHT22</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td style="color: var(--text-secondary); font-size: 0.85rem;">2 min ago</td>
+                                    <td><strong>32.5°C / 65%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>GW-1</strong></td>
+                                    <td>MQ-135</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td style="color: var(--text-secondary); font-size: 0.85rem;">2 min ago</td>
+                                    <td><strong>210 PPM</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>GW-1</strong></td>
+                                    <td>Flame Sensor</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td style="color: var(--text-secondary); font-size: 0.85rem;">2 min ago</td>
+                                    <td><strong>No Detection</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>GW-1</strong></td>
+                                    <td>LDR (Light)</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td style="color: var(--text-secondary); font-size: 0.85rem;">2 min ago</td>
+                                    <td><strong>75%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>CAM-1</strong></td>
+                                    <td>ESP32-CAM</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td style="color: var(--text-secondary); font-size: 0.85rem;">5 min ago</td>
+                                    <td><strong>AI Ready</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-5">
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <h5>Recent Events</h5>
+                        <p>System alerts and detections</p>
+                    </div>
+                    <div class="events-list">
+                        <div class="event-item">
+                            <div class="event-meta">
+                                <span class="event-type warning">WARNING</span>
+                                <span class="event-time">5 min ago</span>
+                            </div>
+                            <div class="event-description">Elevated temperature detected</div>
+                            <div class="event-value">Temperature: 38.5°C (Risk Score: 5/10)</div>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-meta">
+                                <span class="event-type" style="color: var(--success-color);">NORMAL</span>
+                                <span class="event-time">15 min ago</span>
+                            </div>
+                            <div class="event-description">System check completed</div>
+                            <div class="event-value">All sensors operational</div>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-meta">
+                                <span class="event-type warning">WARNING</span>
+                                <span class="event-time">1 hour ago</span>
+                            </div>
+                            <div class="event-description">Smoke level spike detected</div>
+                            <div class="event-value">MQ-135: 320 PPM (Risk Score: 6/10)</div>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-meta">
+                                <span class="event-type" style="color: var(--success-color);">NORMAL</span>
+                                <span class="event-time">2 hours ago</span>
+                            </div>
+                            <div class="event-description">Node GW-1 reconnected</div>
+                            <div class="event-value">Connection restored</div>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-meta">
+                                <span class="event-type" style="color: var(--success-color);">NORMAL</span>
+                                <span class="event-time">3 hours ago</span>
+                            </div>
+                            <div class="event-description">Daily maintenance check</div>
+                            <div class="event-value">System health: 100%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Charts -->
+    <script>
+        // Temperature Chart
+        const tempCtx = document.getElementById('tempChart').getContext('2d');
+        new Chart(tempCtx, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: [28, 27, 29, 32, 35, 33, 30],
+                    borderColor: '#000000',
+                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Humidity (%)',
+                    data: [70, 72, 68, 65, 60, 63, 67],
+                    borderColor: '#6c757d',
+                    backgroundColor: 'rgba(108, 117, 125, 0.05)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            boxWidth: 12,
+                            font: { size: 11 }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Smoke Chart
+        const smokeCtx = document.getElementById('smokeChart').getContext('2d');
+        new Chart(smokeCtx, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+                datasets: [{
+                    label: 'MQ-135 (PPM)',
+                    data: [150, 160, 180, 210, 250, 220, 190],
+                    borderColor: '#000000',
+                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            boxWidth: 12,
+                            font: { size: 11 }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Light Chart
+        const lightCtx = document.getElementById('lightChart').getContext('2d');
+        new Chart(lightCtx, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+                datasets: [{
+                    label: 'Light Level (%)',
+                    data: [10, 5, 45, 85, 90, 70, 20],
+                    borderColor: '#000000',
+                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            boxWidth: 12,
+                            font: { size: 11 }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -4,7 +4,7 @@
 
 Your Google Cloud Storage service account JSON file is located at:
 ```
-household-fire-system/display-c8393-40e854cf0fda.json
+household-fire-system/embedded-project-6f2ed-6ff292c84b10.json
 ```
 
 This file contains credentials for:
@@ -26,7 +26,7 @@ The Python AI script (`fire_detection.py`) uses this file to:
    detector = FireDetectionAI(
        esp32_cam_url="http://192.168.1.100/capture",
        gcs_bucket_name="household-fire-images",
-       gcs_service_account_path="../display-c8393-40e854cf0fda.json",  # ← Your file
+       gcs_service_account_path="../embedded-project-6f2ed-6ff292c84b10.json",  # ← Your file
        ...
    )
    ```
@@ -50,12 +50,12 @@ python fire_detection.py
 ### Custom Path
 If the file is elsewhere, specify it:
 ```bash
-python fire_detection.py --gcs-key /path/to/display-c8393-40e854cf0fda.json
+python fire_detection.py --gcs-key /path/to/embedded-project-6f2ed-6ff292c84b10.json
 ```
 
 ### Environment Variable
 ```bash
-export GCS_SERVICE_ACCOUNT=../display-c8393-40e854cf0fda.json
+export GCS_SERVICE_ACCOUNT=../embedded-project-6f2ed-6ff292c84b10.json
 python fire_detection.py
 ```
 
@@ -68,7 +68,7 @@ from google.cloud import storage
 from google.oauth2 import service_account
 
 credentials = service_account.Credentials.from_service_account_file(
-    "../display-c8393-40e854cf0fda.json"
+    "../embedded-project-6f2ed-6ff292c84b10.json"
 )
 client = storage.Client(credentials=credentials, project=credentials.project_id)
 bucket = client.bucket("household-fire-images")

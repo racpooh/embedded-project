@@ -1,18 +1,54 @@
-.loading-container,
-.error-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  text-align: center;
+/* App.css - Minimal global styles */
+
+/* Chart.js responsive container fix */
+canvas {
+  display: block;
+  max-width: 100%;
 }
 
-.error-container {
-  color: #ff4444;
+/* Bootstrap table styling */
+.table {
+  margin-bottom: 0;
 }
 
-.loading-container {
-  color: #888;
+.table thead th {
+  border-bottom: 2px solid var(--border-color);
+  padding: 0.75rem;
 }
 
+.table tbody td {
+  padding: 0.75rem;
+  vertical-align: middle;
+}
+
+/* Badge styling */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+}
+
+.bg-danger {
+  background-color: var(--danger-color) !important;
+}
+
+.bg-success {
+  background-color: var(--success-color) !important;
+}
+
+.bg-warning {
+  background-color: var(--warning-color) !important;
+}
+
+.bg-secondary {
+  background-color: var(--text-secondary) !important;
+}
+
+/* Form controls */
+.form-control {
+  font-family: inherit;
+}
+
+.form-control:focus {
+  box-shadow: none;
+}

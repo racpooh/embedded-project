@@ -54,12 +54,18 @@ LINE Notify
 ```
 household-fire-system/
 ├── README.md                    # This file
+├── package.json                 # Root package for scripts
+├── scripts/
+│   └── uploadMockData.js       # Upload mock data to Firestore
 ├── docs/                        # All documentation
 │   ├── PROJECT_SUMMARY.md      # Detailed project overview
 │   ├── WEB_DASHBOARD.md        # Web dashboard setup guide
 │   ├── FIREBASE_SETUP.md       # Firebase configuration guide
+│   ├── FIRESTORE_SECURITY_RULES.md  # Security rules setup
 │   ├── AI_MODULE.md            # AI detection module guide
-│   └── SERVICE_ACCOUNT_INTEGRATION.md  # GCS service account guide
+│   ├── SERVICE_ACCOUNT_INTEGRATION.md  # GCS service account guide
+│   ├── MOCK_DATA_SETUP.md      # Mock data guide
+│   └── TESTING_WEB_DASHBOARD.md  # Testing guide
 ├── web/                         # React web dashboard
 │   ├── src/
 │   ├── package.json
@@ -70,7 +76,7 @@ household-fire-system/
 │   └── ...
 ├── functions/                   # Firebase Cloud Functions (LINE Notify)
 │   └── (to be added)
-└── display-c8393-40e854cf0fda.json  # GCS service account (gitignored)
+└── embedded-project-6f2ed-6ff292c84b10.json  # GCS service account (gitignored)
 ```
 
 ## 🚀 Quick Start
@@ -85,9 +91,24 @@ cp .env.example .env
 npm run dev
 ```
 
+**Dashboard opens at**: `http://localhost:3000`
+
 **Documentation**: [docs/WEB_DASHBOARD.md](./docs/WEB_DASHBOARD.md)
 
-### 2. AI Detection Module Setup
+### 2. Upload Mock Data to Firestore
+
+First, configure Firebase permissions (one time):
+1. Enable Anonymous Authentication in [Firebase Console](https://console.firebase.google.com/)
+2. Update Firestore Security Rules (see [docs/FIRESTORE_SECURITY_RULES.md](./docs/FIRESTORE_SECURITY_RULES.md))
+
+Then upload mock data:
+```bash
+npm run upload-mock-data
+```
+
+This will upload 50 sensor readings to Firestore for testing.
+
+### 3. AI Detection Module Setup
 
 ```bash
 cd ai
@@ -98,7 +119,7 @@ python fire_detection.py
 
 **Documentation**: [docs/AI_MODULE.md](./docs/AI_MODULE.md)
 
-### 3. Firebase Configuration
+### 4. Firebase Configuration
 
 Get your Firebase configuration keys:
 - Go to [Firebase Console](https://console.firebase.google.com/)
@@ -134,15 +155,17 @@ Get your Firebase configuration keys:
 ```json
 {
   "timestamp": 1712345678901,
+  "node_id": "gw-1",
   "temp": 32.5,
   "humidity": 65,
   "mq_arduino": 210,
   "mq_gateway": 180,
   "flame": false,
-  "light": 450,
+  "gas_gateway": 320,
+  "light": 0.75,
   "risk_level": "NORMAL",
   "ai_fire_detected": false,
-  "source": "esp32_gateway"
+  "source": "gateway"
 }
 ```
 
@@ -155,7 +178,7 @@ Get your Firebase configuration keys:
   "risk_score": 8,
   "ai_fire_detected": true,
   "ai_confidence": 0.92,
-  "image_url": "https://storage.googleapis.com/household-fire-images/...",
+  "image_url": "https://storage.googleapis.com/...",
   "acknowledged": false
 }
 ```
@@ -180,8 +203,11 @@ All detailed documentation is in the [`docs/`](./docs/) folder:
 - **[PROJECT_SUMMARY.md](./docs/PROJECT_SUMMARY.md)** - Complete project overview and architecture
 - **[WEB_DASHBOARD.md](./docs/WEB_DASHBOARD.md)** - Web dashboard setup and usage
 - **[FIREBASE_SETUP.md](./docs/FIREBASE_SETUP.md)** - Firebase configuration guide
+- **[FIRESTORE_SECURITY_RULES.md](./docs/FIRESTORE_SECURITY_RULES.md)** - Security rules setup
 - **[AI_MODULE.md](./docs/AI_MODULE.md)** - AI detection module setup
 - **[SERVICE_ACCOUNT_INTEGRATION.md](./docs/SERVICE_ACCOUNT_INTEGRATION.md)** - GCS service account integration
+- **[MOCK_DATA_SETUP.md](./docs/MOCK_DATA_SETUP.md)** - Mock data generation guide
+- **[TESTING_WEB_DASHBOARD.md](./docs/TESTING_WEB_DASHBOARD.md)** - Testing procedures
 
 ## 🎯 Demo Flow
 
@@ -202,7 +228,7 @@ All detailed documentation is in the [`docs/`](./docs/) folder:
 
 - **Hardware**: Arduino UNO, ESP32, ESP32-CAM, DHT22, MQ-135, LDR, Flame sensor
 - **Backend**: Python 3, Firebase Admin SDK, Google Cloud Storage
-- **Frontend**: React 18, TypeScript, Vite, Firebase SDK
+- **Frontend**: React 18, TypeScript, Vite, Firebase SDK, Recharts
 - **AI/ML**: YOLO, FireNet (or custom models)
 - **Cloud**: Firebase (Firestore, Functions, Auth), Google Cloud Storage
 - **Notifications**: LINE Notify API
@@ -219,6 +245,25 @@ All detailed documentation is in the [`docs/`](./docs/) folder:
 - Google Cloud Storage service account
 - Firebase Admin SDK credentials
 - AI model (YOLO/FireNet) - optional
+
+## 📜 Scripts
+
+```bash
+# Upload mock data to Firestore
+npm run upload-mock-data
+
+# Web dashboard development
+cd web && npm run dev
+
+# Web dashboard build
+cd web && npm run build
+
+# AI detection
+cd ai && python fire_detection.py
+
+# AI detection (continuous)
+cd ai && python fire_detection.py --interval 2.0
+```
 
 ## 🤝 Contributing
 
@@ -240,4 +285,3 @@ All detailed documentation is in the [`docs/`](./docs/) folder:
 ---
 
 **Need help?** Check the [documentation](./docs/) folder for detailed guides on each component.
-

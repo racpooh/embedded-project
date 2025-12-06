@@ -299,7 +299,7 @@ def main():
     )
     parser.add_argument(
         "--gcs-key",
-        default=os.getenv("GCS_SERVICE_ACCOUNT", "../display-c8393-40e854cf0fda.json"),
+        default=os.getenv("GCS_SERVICE_ACCOUNT", "../embedded-project-6f2ed-6ff292c84b10.json"),
         help="Path to GCS service account JSON file"
     )
     parser.add_argument(

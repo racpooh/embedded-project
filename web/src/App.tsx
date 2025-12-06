@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { initializeFirebase, signInAnonymously } from './lib/firebase'
-import Dashboard from './components/Dashboard'
+import { initializeFirebase, signInAnonymouslyOnce } from './lib/firebase'
+import Dashboard from './pages/Dashboard'
 import './App.css'
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
     const init = async () => {
       try {
         initializeFirebase()
-        await signInAnonymously()
+        await signInAnonymouslyOnce()
         setIsInitialized(true)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to initialize Firebase')
@@ -32,7 +32,8 @@ function App() {
   if (!isInitialized) {
     return (
       <div className="loading-container">
-        <h1>Initializing...</h1>
+        <div className="loading-spinner"></div>
+        <h2 style={{ marginTop: '1rem' }}>Initializing...</h2>
       </div>
     )
   }
@@ -41,4 +42,3 @@ function App() {
 }
 
 export default App
-

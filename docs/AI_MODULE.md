@@ -34,7 +34,7 @@ pip install torch torchvision
 
 The script uses the GCS service account JSON file located at:
 ```
-../display-c8393-40e854cf0fda.json
+../embedded-project-6f2ed-6ff292c84b10.json
 ```
 
 **Important:** This file contains sensitive credentials and is excluded from git via `.gitignore`.
@@ -80,7 +80,7 @@ python fire_detection.py
 This will:
 - Use default ESP32-CAM URL: `http://192.168.1.100/capture`
 - Use default GCS bucket: `household-fire-images`
-- Use service account: `../display-c8393-40e854cf0fda.json`
+- Use service account: `../embedded-project-6f2ed-6ff292c84b10.json`
 - Run continuous detection every 2 seconds
 
 ### Custom Configuration
@@ -89,7 +89,7 @@ This will:
 python fire_detection.py \
   --esp32-url http://192.168.1.100/capture \
   --gcs-bucket household-fire-images \
-  --gcs-key ../display-c8393-40e854cf0fda.json \
+  --gcs-key ../embedded-project-6f2ed-6ff292c84b10.json \
   --interval 3.0
 ```
 
@@ -106,7 +106,7 @@ You can also configure via environment variables:
 ```bash
 export ESP32_CAM_URL=http://192.168.1.100/capture
 export GCS_BUCKET=household-fire-images
-export GCS_SERVICE_ACCOUNT=../display-c8393-40e854cf0fda.json
+export GCS_SERVICE_ACCOUNT=../embedded-project-6f2ed-6ff292c84b10.json
 export FIREBASE_CREDENTIALS=/path/to/firebase-key.json
 export FIRE_MODEL_PATH=/path/to/fire_model.pt
 
@@ -124,7 +124,7 @@ python fire_detection.py
 
 ### Service Account Permissions
 
-The service account JSON file (`display-c8393-40e854cf0fda.json`) should have:
+The service account JSON file (`embedded-project-6f2ed-6ff292c84b10.json`) should have:
 - Project: `display-c8393`
 - Email: `fire-ai-uploader@display-c8393.iam.gserviceaccount.com`
 - Required role: `Storage Object Admin` on the bucket
