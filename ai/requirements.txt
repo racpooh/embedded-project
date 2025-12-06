@@ -1,0 +1,20 @@
+# Google Cloud Storage
+google-cloud-storage>=2.10.0
+google-auth>=2.23.0
+
+# Firebase Admin SDK
+firebase-admin>=6.2.0
+
+# HTTP requests for ESP32-CAM
+requests>=2.31.0
+
+# AI Model (YOLO for fire detection)
+# Uncomment and install based on your model choice:
+# ultralytics>=8.0.0  # For YOLO models
+# tensorflow>=2.13.0  # For FireNet or TensorFlow models
+# torch>=2.0.0        # For PyTorch models
+
+# Optional: Image processing
+Pillow>=10.0.0
+numpy>=1.24.0
+
