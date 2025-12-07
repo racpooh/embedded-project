@@ -8,11 +8,19 @@
     "delete-all-data": "node scripts/deleteAllData.js",
     "create-normal-data": "node scripts/createNormalData.js",
     "create-warning-data": "node scripts/createWarningData.js",
-    "create-danger-data": "node scripts/createDangerData.js"
+    "create-danger-data": "node scripts/createDangerData.js",
+    "delete-warning-data": "node scripts/deleteWarningData.js",
+    "delete-danger-data": "node scripts/deleteDangerData.js",
+    "ingest-esp32": "node scripts/ingestFromEsp32.js",
+    "test-esp32-mock": "node scripts/testEsp32Mock.js",
+    "test-esp32-direct": "node scripts/testEsp32Direct.js",
+    "test-webcam": "node scripts/testWebcamIntegration.js",
+    "test-webcam-capture": "node scripts/testWebcamCapture.js"
   },
   "dependencies": {
     "dotenv": "^16.6.1",
-    "firebase": "^10.14.1"
+    "firebase": "^10.14.1",
+    "@google-cloud/storage": "^7.7.0"
   },
   "author": "",
   "license": "MIT"
